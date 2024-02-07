@@ -1,0 +1,40 @@
+Spring security overall flow:
+AppConfig:
+1.AppConfig is the main configuration class annotated with @Configuration and @EnableWebSecurity.
+It defines a SecurityFilterChain bean using SecurityConfigurerAdapter.
+
+
+2.SecurityFilterChain Configuration:
+In AppConfig, the securityFilterChain bean is configured with httpSecurity settings.
+It sets session management to be stateless and configures authorization rules.
+
+3.JwtValidator (First Occurrence):
+The filter chain starts with the JwtValidator class.
+The doFilterInternal method intercepts incoming requests.
+It looks for a JWT token in the request header, extracts the email, and creates an Authentication object.
+This initial Authentication object is set in the SecurityContextHolder.
+
+4.Filter Chain Continuation:
+The filter chain continues, and the request reaches the configured endpoint ("/api/**").
+Endpoint-specific authentication and authorization rules are applied.
+
+5.JwtValidator (Second Occurrence):
+As part of the filter chain setup in AppConfig, JwtValidator is invoked again.
+It checks for a valid token and sets the Authentication object in the SecurityContextHolder once more.
+
+6.Endpoint Execution:
+The request now reaches the actual endpoint ("/api/**").
+
+7.CustomUserDetailService:
+The CustomUserDetailService is invoked automatically by Spring Security during the authentication process.
+The loadUserByUsername method is called to load user details based on the provided email.
+
+8.User Repository Lookup:
+Inside CustomUserDetailService, it looks up user details (password and authorities) from the UserRepository based on the email.
+
+9.UserDetails Object Creation:
+A UserDetails object is created using the fetched user details.
+The UserDetails object includes the user's email, password, and authorities.
+
+10.Authentication Completion:
+The entire authentication process is completed, and the authenticated user information is now available in the SecurityContextHolder.

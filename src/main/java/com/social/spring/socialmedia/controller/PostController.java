@@ -59,7 +59,11 @@ public class PostController {
         return new ResponseEntity<>(postService.savePost(postId, loggedInUser.getUserId()), HttpStatus.OK);
     }
 
+<<<<<<< HEAD
     @PutMapping("/{postId}/like")
+=======
+    @PutMapping("/api/posts/{postId}/like")
+>>>>>>> origin/main
     public ResponseEntity<Post> likePost(@PathVariable Integer postId, @RequestHeader("Authorization")String token) throws Exception {
         User loggedInUser = userService.findUserByToken(token);
         return new ResponseEntity<>(postService.likePost(postId, loggedInUser.getUserId()), HttpStatus.OK);

@@ -1,7 +1,7 @@
 package com.social.spring.socialmedia.service;
 
 import com.social.spring.socialmedia.config.JwtProvider;
-import com.social.spring.socialmedia.exceptions.UserNotFoundException;
+import com.social.spring.socialmedia.exceptions.UserException;
 import com.social.spring.socialmedia.model.User;
 import com.social.spring.socialmedia.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +27,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserById(Integer userId) throws UserNotFoundException {
+    public User findUserById(Integer userId) throws UserException {
         Optional<User> optionalUser = userRepository.findById(userId);
-        return optionalUser.orElseThrow(() -> new UserNotFoundException("No user found with ID: " + userId));
+        return optionalUser.orElseThrow(() -> new UserException("No user found with ID: " + userId));
     }
 
 
     @Override
-    public User findUserByEmail(String email) {
+    public User findUserByEmail(String email) throws UserException {
         Optional<User> optionalUser = userRepository.findByEmail(email);
-        return optionalUser.orElseThrow(() -> new UserNotFoundException("No user found form email: " + email));
+        return optionalUser.orElseThrow(() -> new UserException("No user found form email: " + email));
     }
 
     @Override
-    public User followUser(Integer loggedInUserId, Integer userId2) {
+    public User followUser(Integer loggedInUserId, Integer userId2) throws UserException {
 
         User loggedInUser = findUserById(loggedInUserId);
         User user2 = findUserById(userId2);
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user, Integer userId) throws UserNotFoundException {
+    public User updateUser(User user, Integer userId) throws UserException {
         Optional<User> optionalUser = userRepository.findById(userId);
 
         if(optionalUser.isPresent()) {
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(existingUser);
         }
         else {
-            throw new UserNotFoundException("User "+ user.getFirstName()+" does not exist");
+            throw new UserException("User "+ user.getFirstName()+" does not exist");
         }
     }
 
@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByToken(String token) {
+    public User findUserByToken(String token) throws UserException {
         String email = JwtProvider.getEmailFromJwtToken(token);
         Optional<User> user = userRepository.findByEmail(email);
 
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
             return user.get();
         }
         else {
-            throw new UserNotFoundException("User Not dound with token");
+            throw new UserException("User Not found with token");
         }
     }
 }

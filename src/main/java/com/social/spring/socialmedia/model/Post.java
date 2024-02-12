@@ -35,10 +35,10 @@ public class Post {
 //            joinColumns = @JoinColumn(name = "user_user_id"),  // Specify the name of the foreign key column for User
 //            inverseJoinColumns = @JoinColumn(name = "saved_posts_post_id"))
     private List<Post> usersWhoSavedThisPost = new ArrayList<>();
-<<<<<<< HEAD
+
 
     @OneToMany
     private List<Comment> comments = new ArrayList<>();
-=======
->>>>>>> origin/main
+
+
 }

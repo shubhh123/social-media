@@ -1,5 +1,8 @@
 package com.social.spring.socialmedia.service;
 
+import com.social.spring.socialmedia.exceptions.CommentNotFoundException;
+import com.social.spring.socialmedia.exceptions.PostNotFoundException;
+import com.social.spring.socialmedia.exceptions.UserException;
 import com.social.spring.socialmedia.model.Comment;
 import com.social.spring.socialmedia.model.Post;
 import com.social.spring.socialmedia.model.User;
@@ -19,8 +22,9 @@ public class CommentServiceImpl implements CommentService{
     private final UserService userService;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+
     @Override
-    public Comment createComment(Comment comment, Integer postId, Integer userId) throws Exception {
+    public Comment createComment(Comment comment, Integer postId, Integer userId) throws UserException, PostNotFoundException {
 
         User user = userService.findUserById(userId);
         Post post = postService.findPostById(postId);
@@ -52,12 +56,12 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public Comment findCommentById(Integer commentId) throws Exception {
+    public Comment findCommentById(Integer commentId) throws CommentNotFoundException {
 
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
         if(optionalComment.isEmpty()) {
-            throw new Exception("Comment does not exist with that id");
+            throw new CommentNotFoundException("Comment does not exist with the id:"+ commentId);
         }
 
         return optionalComment.get();

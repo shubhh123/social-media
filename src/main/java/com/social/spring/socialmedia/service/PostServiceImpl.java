@@ -1,5 +1,7 @@
 package com.social.spring.socialmedia.service;
 
+import com.social.spring.socialmedia.exceptions.PostNotFoundException;
+import com.social.spring.socialmedia.exceptions.UserException;
 import com.social.spring.socialmedia.model.Post;
 import com.social.spring.socialmedia.model.User;
 import com.social.spring.socialmedia.repository.PostRepository;
@@ -23,7 +25,7 @@ public class PostServiceImpl implements PostService{
 
 
     @Override
-    public Post createPost(Post post, Integer userId) {
+    public Post createPost(Post post, Integer userId) throws UserException {
 
         LocalDateTime now = LocalDateTime.now(); // Gets current date and time
 
@@ -57,12 +59,12 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Post findPostById(Integer postId) throws Exception {
+    public Post findPostById(Integer postId) throws PostNotFoundException {
 
         Optional<Post> post = postRepository.findById(postId);
 
         if(post.isEmpty()) {
-            throw new Exception("Post not found with post id: "+ postId);
+            throw new PostNotFoundException("Post not found with post id: "+ postId);
         }
         return post.get();
     }
@@ -73,7 +75,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Post savePost(Integer postId, Integer userId) throws Exception {
+    public Post savePost(Integer postId, Integer userId) throws UserException, PostNotFoundException {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
 

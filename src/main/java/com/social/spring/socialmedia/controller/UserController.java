@@ -1,5 +1,6 @@
 package com.social.spring.socialmedia.controller;
 
+import com.social.spring.socialmedia.exceptions.UserException;
 import com.social.spring.socialmedia.model.User;
 import com.social.spring.socialmedia.repository.UserRepository;
 import com.social.spring.socialmedia.service.UserService;
@@ -28,24 +29,24 @@ public class UserController {
     }
 
     @GetMapping("/api/user/{userId}")
-    public User findUserById(@PathVariable Integer userId) throws Exception {
+    public User findUserById(@PathVariable Integer userId) throws UserException {
         return userService.findUserById(userId);
     }
 
     @GetMapping("/api/user/find-by-email")
-    public User findUserByEmail(@RequestParam String email) {
+    public User findUserByEmail(@RequestParam String email) throws UserException {
         return userService.findUserByEmail(email);
     }
 
     ///api/user/{userId}
     @PutMapping("/api/user/update")
-    public User updateUser(@RequestHeader("Authorization")String token, @RequestBody User user) throws Exception {
+    public User updateUser(@RequestHeader("Authorization")String token, @RequestBody User user) throws UserException {
         User loggedInUser = userService.findUserByToken(token);
         return userService.updateUser(user, loggedInUser.getUserId());
     }
 
     @PutMapping("/user/follow/{userId2}")
-    public User followUserHandler(@RequestHeader("Authorization")String token, @PathVariable Integer userId2) {
+    public User followUserHandler(@RequestHeader("Authorization")String token, @PathVariable Integer userId2) throws UserException {
         User loggedInUser = userService.findUserByToken(token);
 
         //USER1 FOLLOWS USER2
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/api/user/profile")
-    public User getUserFromToken(@RequestHeader("Authorization")String token) {
+    public User getUserFromToken(@RequestHeader("Authorization")String token) throws UserException {
         User user = userService.findUserByToken(token);
         user.setPassword(null);
 

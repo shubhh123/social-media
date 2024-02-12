@@ -1,5 +1,6 @@
 package com.social.spring.socialmedia.controller;
 
+import com.social.spring.socialmedia.exceptions.UserException;
 import com.social.spring.socialmedia.model.Post;
 import com.social.spring.socialmedia.model.User;
 import com.social.spring.socialmedia.response.ApiResponse;
@@ -20,7 +21,7 @@ public class PostController {
 
     private final UserService userService;
     @PostMapping("/api/posts")
-    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestHeader("Authorization")String token){  //ResponseEntity allows you to send status code as the response too..
+    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestHeader("Authorization")String token) throws UserException {  //ResponseEntity allows you to send status code as the response too..
 
         User loggedInUser = userService.findUserByToken(token);
 
@@ -59,11 +60,8 @@ public class PostController {
         return new ResponseEntity<>(postService.savePost(postId, loggedInUser.getUserId()), HttpStatus.OK);
     }
 
-<<<<<<< HEAD
-    @PutMapping("/{postId}/like")
-=======
     @PutMapping("/api/posts/{postId}/like")
->>>>>>> origin/main
+
     public ResponseEntity<Post> likePost(@PathVariable Integer postId, @RequestHeader("Authorization")String token) throws Exception {
         User loggedInUser = userService.findUserByToken(token);
         return new ResponseEntity<>(postService.likePost(postId, loggedInUser.getUserId()), HttpStatus.OK);
